@@ -13,9 +13,8 @@ const createToken = (data) =>{
         name: data.name,
         surname: data.surname,
         nickname: data.nickname,
-        password: data.password,
         email: data.email,
-        position: data.position,
+        role: data.role,
         image: data.image,
         iat: moment().unix(),
         exp: moment().add(30,"days").unix()
