@@ -105,8 +105,28 @@ const userLogin = async (req, res) => {
     })
 
 }
+
+const profileUser = async (req,res)=>{
+  //Get the params of id user to url
+  const id = req.params.id;
+  //query for dates users
+  User.findById(id)
+  .select({password: 0, role: 0})
+  .then(data =>{
+    return res.status(200).send({
+      status: 'success',
+      user: data
+    });
+
+  }).catch(err =>{
+    if(err || !data){
+      return response.error(req, res, 'user not exist', 400, err);
+    }
+  });
+}
 module.exports = {
   testUser,
   createUser,
-  userLogin
+  userLogin,
+  profileUser
 }

@@ -8,5 +8,5 @@ const check = require('../../middleware/auth');
 router.get('/test',check.auth, controller.testUser);
 router.post('/create',uploadImage(), controller.createUser);
 router.post('/login', controller.userLogin);
-
+router.get('/profile/:id',check.auth, controller.profileUser);
 module.exports = router;
