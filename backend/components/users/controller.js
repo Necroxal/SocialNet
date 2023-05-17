@@ -106,27 +106,62 @@ const userLogin = async (req, res) => {
 
 }
 
-const profileUser = async (req,res)=>{
+const profileUser = async (req, res) => {
   //Get the params of id user to url
   const id = req.params.id;
   //query for dates users
   User.findById(id)
-  .select({password: 0, role: 0})
-  .then(data =>{
-    return res.status(200).send({
+    .select({ password: 0, role: 0 })
+    .then(data => {
+      return res.status(200).send({
+        status: 'success',
+        user: data
+      });
+
+    }).catch(err => {
+      if (err || !data) {
+        return response.error(req, res, 'user not exist', 400, err);
+      }
+    });
+}
+
+const listUser = async (req, res) => {
+
+  //check on the page we are on now
+  let page = 1;
+  if (req.params.page) {
+    page = req.params.page;
+  }
+  page = parseInt(page);
+  const itemPerPage = 5; //limit elements
+  //query with mongoose pagination
+
+
+  User.paginate({}, {
+    limit: itemPerPage,
+    page: page,
+    sort: '_id'
+  }).then((data) => {
+    return res.status(201).send({
       status: 'success',
-      user: data
+      users: data.docs,
+      page: data.page,
+      limit: data.limit,
+      total: data.totalDocs,
+      pages: Math.ceil(data.totalDocs/data.limit)
     });
 
-  }).catch(err =>{
-    if(err || !data){
-      return response.error(req, res, 'user not exist', 400, err);
+  }).catch(err => {
+    if (err || !data) {
+      return response.error(req, res, 'Query error', 500, err);
     }
   });
+
 }
 module.exports = {
   testUser,
   createUser,
   userLogin,
-  profileUser
+  profileUser,
+  listUser
 }

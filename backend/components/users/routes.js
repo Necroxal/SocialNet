@@ -9,4 +9,5 @@ router.get('/test',check.auth, controller.testUser);
 router.post('/create',uploadImage(), controller.createUser);
 router.post('/login', controller.userLogin);
 router.get('/profile/:id',check.auth, controller.profileUser);
+router.get('/list/:page?',check.auth, controller.listUser);
 module.exports = router;
