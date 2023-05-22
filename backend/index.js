@@ -11,6 +11,8 @@ db(process.env.URL);
 
 const app = express();
 const PORT = process.env.PORT;
+
+
 //Cors
 app.use(cors());
 
@@ -20,6 +22,7 @@ app.use(express.urlencoded({extended: true}));
 
 
 router(app);
+
 //listen
 app.listen(PORT,  ()=>{
     console.log(`The server is listen on port: ${PORT}`);

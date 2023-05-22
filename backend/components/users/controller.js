@@ -19,13 +19,13 @@ const createUser = async (req, res) => {
     return;
   }
 
-
   const passEnc = req.body.password;
   const passCrypt = await bcrypt.hash(passEnc, saltRounds);
 
   const user = new User({
     name: req.body.name,
     surname: req.body.surname,
+    bio: req.body.bio,
     nickname: req.body.nickname,
     password: passCrypt,
     email: req.body.email,
@@ -148,7 +148,7 @@ const listUser = async (req, res) => {
       page: data.page,
       limit: data.limit,
       total: data.totalDocs,
-      pages: Math.ceil(data.totalDocs/data.limit)
+      pages: Math.ceil(data.totalDocs / data.limit)
     });
 
   }).catch(err => {
@@ -158,10 +158,79 @@ const listUser = async (req, res) => {
   });
 
 }
+
+const updateUser = async (req, res) => {
+
+  let userIdentity = req.user;
+  let userToUpdate = req.body;
+
+  delete userIdentity.iat;
+  delete userIdentity.exp;
+  delete userIdentity.role;
+  delete userIdentity.image;
+
+  if (userToUpdate.password) {
+    const passEnc = userToUpdate.password;
+    const passCrypt = await bcrypt.hash(passEnc, saltRounds);
+    userToUpdate.password = passCrypt;
+
+  }
+
+  //console.log(userToUpdate);
+
+  //check user exist
+  User.find({
+    $or: [
+      { email: userToUpdate.email.toLocaleLowerCase() },
+      { nickname: userToUpdate.nickname.toLocaleLowerCase() }
+    ]
+  }).then((data) => {
+    //console.log(data);
+    let userIsset = false;
+    data.forEach(user => {
+      if (user && user._id != userIdentity.id) {
+        userIsset = true;
+      }
+    })
+    if (userIsset) {
+      response.succes(req, res, 'user exist', 201);
+    }
+    User.findByIdAndUpdate(userIdentity.id, userToUpdate, { new: true }).then(data => {
+      //Search and update
+      return res.status(200).send({
+        status: 'success',
+        message: 'Update Method',
+        data
+      });
+    }).catch(error => {
+      if(error || !data){
+        return response.error(req, res, 'Query error', 501, error);
+      }
+
+    })
+
+
+  }).catch((error) => {
+
+    if (error) {
+      return response.error(req, res, 'Internal Error', 500, error);
+    }
+  })
+
+}
+const uploadImage = async(req,res)=>{
+  return res.status(200).send({
+    status: 'success',
+    message: 'Upload image'
+  });
+}
+
 module.exports = {
   testUser,
   createUser,
   userLogin,
   profileUser,
-  listUser
+  listUser,
+  updateUser,
+  uploadImage
 }
