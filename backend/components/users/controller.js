@@ -1,6 +1,7 @@
 const User = require('./model');
 const response = require('../../utils/response');
 const jwt = require('../../utils/jwt');
+const fs = require('fs');
 //bycript
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -219,10 +220,26 @@ const updateUser = async (req, res) => {
 
 }
 const uploadImage = async(req,res)=>{
-  return res.status(200).send({
-    status: 'success',
-    message: 'Upload image'
-  });
+  if(!req.file){
+    response.error(req, res, 'Image empty', 440, 'uplaod image (jpg,png,jpge...)');
+    return;
+  }
+  
+  User.findByIdAndUpdate(req.user.id,{image:req.file.filename},{new:true})
+  .then(data=>{
+    return res.status(200).send({
+      status: 'success',
+      user: data,
+      file: req.file
+    });
+  }).catch(err=>{
+    if(err || !data){
+    response.error(req, res, 'upload image error', 500, err)
+    }
+  }); 
+  //const filePath = req.file.path;
+  //const dele = fs.unlinkSync(filePath);
+ 
 }
 
 module.exports = {

@@ -6,7 +6,7 @@ const path = require('path');
 const uploadImage = () => {
     const storage = multer.diskStorage({
         //Save to a directory folder
-        //destination: './public/image',
+        destination: './public/picsprofile',
         filename: (req, file, cb) => { //specs of dile
             const fileTypes = /jpeg|jpg|png|gif/; //Regular expression for extensions
             const mimetype = fileTypes.test(file.mimetype);
@@ -16,7 +16,8 @@ const uploadImage = () => {
                 return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`) //Format for the uploaded image
               }
             else{
-                cb("Error: invalid image format");
+                 cb("Error: invalid image format");
+             
             }
         }
     });
