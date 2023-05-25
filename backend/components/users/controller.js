@@ -2,12 +2,13 @@ const User = require('./model');
 const response = require('../../utils/response');
 const jwt = require('../../utils/jwt');
 const fs = require('fs');
+const path = require('path');
 //bycript
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 
-const testUser = async (req, res) => {
+const testUser =  (req, res) => {
   return res.status(200).send({
     message: "The route test",
     user: req.user
@@ -72,7 +73,7 @@ const createUser = async (req, res) => {
 
 }
 
-const userLogin = async (req, res) => {
+const userLogin =  (req, res) => {
   //get params
   if (!req.body.email || !req.body.password) {
     response.error(req, res, '', 400, 'missing email or password');
@@ -107,7 +108,7 @@ const userLogin = async (req, res) => {
 
 }
 
-const profileUser = async (req, res) => {
+const profileUser =  (req, res) => {
   //Get the params of id user to url
   const id = req.params.id;
   //query for dates users
@@ -126,7 +127,7 @@ const profileUser = async (req, res) => {
     });
 }
 
-const listUser = async (req, res) => {
+const listUser =  (req, res) => {
 
   //check on the page we are on now
   let page = 1;
@@ -219,7 +220,7 @@ const updateUser = async (req, res) => {
   })
 
 }
-const uploadImage = async(req,res)=>{
+const uploadImage = (req,res)=>{
   if(!req.file){
     response.error(req, res, 'Image empty', 440, 'uplaod image (jpg,png,jpge...)');
     return;
@@ -242,6 +243,26 @@ const uploadImage = async(req,res)=>{
  
 }
 
+const avatar = (req,res)=>{
+
+  const file = req.params.file;
+
+  const filePath = './public/avatars/'+file;
+  console.log(filePath);
+  //validatiob
+  fs.stat(filePath,(error,exists)=>{
+    if(error || !exists){
+      return res.status(404).send({
+        status: 'Error',
+        message: 'Does exist image'
+      });
+    }
+    //Get file 
+    return res.sendFile(path.resolve(filePath));
+  })
+ 
+
+}
 module.exports = {
   testUser,
   createUser,
@@ -249,5 +270,6 @@ module.exports = {
   profileUser,
   listUser,
   updateUser,
-  uploadImage
+  uploadImage,
+  avatar
 }
