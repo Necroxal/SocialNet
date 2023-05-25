@@ -197,7 +197,7 @@ const updateUser = async (req, res) => {
     if (userIsset) {
       response.succes(req, res, 'user exist', 201);
     }
-    User.findByIdAndUpdate(userIdentity.id, userToUpdate, { new: true }).then(data => {
+    User.findByIdAndUpdate({_id: userIdentity.id}, userToUpdate, { new: true }).then(data => {
       //Search and update
       return res.status(200).send({
         status: 'success',
@@ -226,7 +226,7 @@ const uploadImage = (req,res)=>{
     return;
   }
   
-  User.findByIdAndUpdate(req.user.id,{image:req.file.filename},{new:true})
+  User.findByIdAndUpdate({_id: req.user.id},{image:req.file.filename},{new:true})
   .then(data=>{
     return res.status(200).send({
       status: 'success',
