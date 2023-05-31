@@ -1,6 +1,7 @@
 const Follow = require('./model');
 const User = require('../users/model');
 const response = require('../../utils/response');
+const followService = require('../../utils/followService');
 
 const test = (req,res)=>{
     return response.succes(req,res,'success', 200);
@@ -73,13 +74,17 @@ const following = (req,res)=>{
     }
     
     Follow.paginate({user: userID}, options)
-    .then(data=>{
+    .then(async data=>{
+
+        let  followUserIds =   await followService.followUserIds(req.user.id);
         res.status(200).send({
             status: 'success',
             message: 'list users followed',
             data: data.docs,
             total: data.totalDocs,
-            page: Math.ceil(data.totalDocs / data.limit)
+            page: Math.ceil(data.totalDocs / data.limit),
+            user_following: followUserIds.following,
+            user_follow_me: followUserIds.followers
         });
     }).catch(err =>{
         return response.error(req, res, 'Not found', 404, err);
