@@ -54,8 +54,47 @@ const unFollow = (req,res)=>{
     });
 
 }
+const following = (req,res)=>{
+
+    let userID = req.user.id;
+
+    if(req.params.id) userID = req.params.id;
+    
+    let page = 1;
+    if(req.params.page) page = req.params.page;
+    page = parseInt(page);
+    const itemPerPage = 5; //limit elements
+    //query with mongoose pagination
+
+    const options = {
+        page: page,
+        limit:5,
+        populate:({ path: 'user followed', select: ' -role -__v -password'}) 
+    }
+    
+    Follow.paginate({user: userID}, options)
+    .then(data=>{
+        res.status(200).send({
+            status: 'success',
+            message: 'list users followed',
+            data: data.docs,
+            total: data.totalDocs,
+            page: Math.ceil(data.totalDocs / data.limit)
+        });
+    }).catch(err =>{
+        return response.error(req, res, 'Not found', 404, err);
+    });
+}
+const followers = (req,res)=>{
+    res.status(200).send({
+        status: 'success',
+        message: 'list users followed',
+    });
+}
 module.exports = {
     test,
     savefollow,
-    unFollow
+    unFollow,
+    following,
+    followers
 }
