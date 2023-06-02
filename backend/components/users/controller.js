@@ -3,6 +3,7 @@ const response = require('../../utils/response');
 const jwt = require('../../utils/jwt');
 const fs = require('fs');
 const path = require('path');
+const followService = require('../../utils/followService');
 //bycript
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -114,10 +115,15 @@ const profileUser =  (req, res) => {
   //query for dates users
   User.findById(id)
     .select({ password: 0, role: 0 })
-    .then(data => {
+    .then(async data => {
+
+      let followInfo = await followService.followThisUser(req.user.id, id);
+
       return res.status(200).send({
         status: 'success',
-        user: data
+        user: data,
+        following : followInfo.following,
+        followers: followInfo.followers
       });
 
     }).catch(err => {
