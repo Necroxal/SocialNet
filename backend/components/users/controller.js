@@ -149,14 +149,18 @@ const listUser =  (req, res) => {
     limit: itemPerPage,
     page: page,
     sort: '_id'
-  }).then((data) => {
+  }).then(async data => {
+
+    let  followUserIds =   await followService.followUserIds(req.user.id);
     return res.status(201).send({
       status: 'success',
       users: data.docs,
       page: data.page,
       limit: data.limit,
       total: data.totalDocs,
-      pages: Math.ceil(data.totalDocs / data.limit)
+      pages: Math.ceil(data.totalDocs / data.limit),
+      user_following: followUserIds.following,
+      user_follow_me: followUserIds.followers
     });
 
   }).catch(err => {
