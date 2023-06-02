@@ -18,12 +18,12 @@ const followUserIds = async (identityUserId) => {
 
         let followers_clean = [];
         followers.forEach(follow => {
-            followers_clean.push(follow.followed);
+            followers_clean.push(follow.user);
         });
 
         return {
             following: following_clean,
-            followers: followers_clean
+            followers: followers_clean 
         }
     } catch (error) {
         return {};

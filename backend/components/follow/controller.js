@@ -66,6 +66,7 @@ const following = (req,res)=>{
     page = parseInt(page);
     const itemPerPage = 5; //limit elements
     //query with mongoose pagination
+    
 
     const options = {
         page: page,
