@@ -55,6 +55,7 @@ const unFollow = (req, res) => {
     });
 
 }
+//list users following
 const following = (req, res) => {
 
     let userID = req.user.id;
@@ -68,7 +69,7 @@ const following = (req, res) => {
     const options = {
         page: page,
         limit: 5,
-        populate: ({ path: 'user followed', select: ' -role -__v -password' })
+        populate: ({ path: 'followed', select: ' -role -__v -password' })
     }
 
     Follow.paginate({ user: userID }, options)
@@ -88,6 +89,7 @@ const following = (req, res) => {
             return response.error(req, res, 'Not found', 404, err);
         });
 }
+//get followers
 const followers = (req, res) => {
     let userID = req.user.id;
 
