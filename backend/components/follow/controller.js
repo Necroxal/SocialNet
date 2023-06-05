@@ -83,7 +83,7 @@ const following = (req, res) => {
                 total: data.totalDocs,
                 page: Math.ceil(data.totalDocs / data.limit),
                 user_following: followUserIds.following,
-                user_follow_me: followUserIds.followers
+                
             });
         }).catch(err => {
             return response.error(req, res, 'Not found', 404, err);
@@ -116,7 +116,6 @@ const followers = (req, res) => {
             data: data.docs,
             total: data.totalDocs,
             page: Math.ceil(data.totalDocs / data.limit),
-            user_following: followUserIds.following,
             user_follow_me: followUserIds.followers
         });
     }).catch(err => {

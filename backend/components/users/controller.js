@@ -123,7 +123,7 @@ const profileUser =  (req, res) => {
         status: 'success',
         user: data,
         following : followInfo.following,
-        followers: followInfo.followers
+        followers: followInfo.follower
       });
 
     }).catch(err => {
