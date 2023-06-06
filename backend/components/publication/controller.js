@@ -38,10 +38,29 @@ const onePubli = (req, res) => {
     }).catch(error => {
         return response.error(req, res, 'There are no publications', 500, error);
     });
-
 }
+
+const deletePubli = (req,res) =>{
+
+    const publicationId = req.params.id;
+
+    Publication.find({'user': req.user.id, '_id': publicationId }).findOneAndDelete().then(data=>{
+        
+        return res.status(200).send({
+            status: 'success',
+            message: 'Delete Publication',
+            publication: data
+        });
+    
+    }).catch(error =>{
+        return response.error(req, res, 'COULD NOT DELETE', 500, error);
+    });
+}
+
+
 module.exports = {
     test,
     savePubli,
-    onePubli
+    onePubli,
+    deletePubli
 }
