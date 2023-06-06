@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 //const mongoosePaginate = require('mongoose-paginate-v2');
 
 const PublicationSchema = new Schema({
-    text:{
+    user:{
         type: Schema.ObjectId,
         ref: 'User'
     },
