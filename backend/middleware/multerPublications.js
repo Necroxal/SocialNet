@@ -6,7 +6,7 @@ const path = require('path');
 const uploadImage = () => {
     const storage = multer.diskStorage({
         //Save to a directory folder
-        destination: './public/avatars',
+        destination: './public/publications',
         filename: (req, file, cb) => { //specs of dile
             const fileTypes = /jpeg|jpg|png|gif/; //Regular expression for extensions
             const mimetype = fileTypes.test(file.mimetype);
@@ -22,7 +22,7 @@ const uploadImage = () => {
         }
     });
     //load the configuration and assign a name to upload it
-    const upload = multer({storage: storage}).single('avatar');
+    const upload = multer({storage: storage}).single('publications');
     return upload;
 }
 
