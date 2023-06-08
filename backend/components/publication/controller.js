@@ -40,27 +40,59 @@ const onePubli = (req, res) => {
     });
 }
 
-const deletePubli = (req,res) =>{
+const deletePubli = (req, res) => {
 
     const publicationId = req.params.id;
 
-    Publication.find({'user': req.user.id, '_id': publicationId }).findOneAndDelete().then(data=>{
-        
+    Publication.find({ 'user': req.user.id, '_id': publicationId }).findOneAndDelete().then(data => {
+
         return res.status(200).send({
             status: 'success',
             message: 'Delete Publication',
             publication: data
         });
-    
-    }).catch(error =>{
+
+    }).catch(error => {
         return response.error(req, res, 'COULD NOT DELETE', 500, error);
     });
 }
 
+const listPubliOneUser = (req, res) => {
+    const userId = req.params.id;
+
+    let page = 1;
+    if (req.params.page) page = req.params.page;
+    page = parseInt(page);
+
+    const options = {
+        page: page,
+        limit: 5,
+        sort: '-created_at',
+        populate: ({ path: 'user', select: ' -role -__v -password'})
+    }
+
+    Publication.paginate({ user: userId }, options)
+        .then(data => {
+
+            return res.status(200).send({
+                status: 'success',
+                message: 'List Publications of one User',
+                user: req.user,
+                data: data.docs,
+                total: data.totalDocs,
+                pages: Math.ceil(data.totalDocs / data.limit),
+                page: data.page
+            });
+
+        }).catch(err => {
+            return response.error(req, res, ' There are no ads to display', 500, err);
+        });
+}
 
 module.exports = {
     test,
     savePubli,
     onePubli,
-    deletePubli
+    deletePubli,
+    listPubliOneUser
 }

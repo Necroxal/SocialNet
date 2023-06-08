@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-//const mongoosePaginate = require('mongoose-paginate-v2');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const PublicationSchema = new Schema({
     user:{
@@ -16,5 +16,5 @@ const PublicationSchema = new Schema({
     }
 });
 
-//FollowSchema.plugin(mongoosePaginate);
+PublicationSchema.plugin(mongoosePaginate);
 module.exports = model('Publication', PublicationSchema);
