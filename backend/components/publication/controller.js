@@ -2,11 +2,11 @@ const Publication = require('./model');
 const response = require('../../utils/response');
 const fs = require('fs');
 const path = require('path');
+const followService = require('../../utils/followService');
 
 const test = (req, res) => {
     return response.succes(req, res, 'success', 200);
 }
-
 const savePubli = (req, res) => {
     const params = req.body;
 
@@ -42,7 +42,6 @@ const onePubli = (req, res) => {
         return response.error(req, res, 'There are no publications', 500, error);
     });
 }
-
 const deletePubli = (req, res) => {
 
     const publicationId = req.params.id;
@@ -59,7 +58,6 @@ const deletePubli = (req, res) => {
         return response.error(req, res, 'COULD NOT DELETE', 500, error);
     });
 }
-
 const listPubliOneUser = (req, res) => {
     const userId = req.params.id;
 
@@ -71,7 +69,7 @@ const listPubliOneUser = (req, res) => {
         page: page,
         limit: 5,
         sort: '-created_at',
-        populate: ({ path: 'user', select: ' -role -__v -password'})
+        populate: ({ path: 'user', select: ' -role -__v -password -email' })
     }
 
     Publication.paginate({ user: userId }, options)
@@ -91,50 +89,79 @@ const listPubliOneUser = (req, res) => {
             return response.error(req, res, ' There are no ads to display', 500, err);
         });
 }
-
-const uploadImagePubli = (req,res)=>{
+const uploadImagePubli = (req, res) => {
 
     const publicationId = req.params.id;
 
-    if(!req.file){
-      response.error(req, res, 'Image empty', 440, 'uplaod image (jpg,png,jpge...)');
-      return;
+    if (!req.file) {
+        response.error(req, res, 'Image empty', 440, 'uplaod image (jpg,png,jpge...)');
+        return;
     }
-    
-    Publication.findByIdAndUpdate({user: req.user.id, '_id': publicationId},{image:req.file.filename},{new:true})
-    .then(data=>{
-      return res.status(200).send({
-        status: 'success',
-        publication: data,
-        file: req.file
-      });
-    }).catch(err=>{
-      if(err || !data){
-      response.error(req, res, 'upload image error', 500, err)
-      }
-    }); 
-   
-  }
 
-const publicationMedia = (req,res)=>{
+    Publication.findByIdAndUpdate({ user: req.user.id, '_id': publicationId }, { image: req.file.filename }, { new: true })
+        .then(data => {
+            return res.status(200).send({
+                status: 'success',
+                publication: data,
+                file: req.file
+            });
+        }).catch(err => {
+            if (err || !data) {
+                response.error(req, res, 'upload image error', 500, err)
+            }
+        });
+
+}
+const publicationMedia = (req, res) => {
 
     const file = req.params.file;
-  
-    const filePath = './public/publications/'+file;
+
+    const filePath = './public/publications/' + file;
     console.log(filePath);
     //validatiob
-    fs.stat(filePath,(error,exists)=>{
-      if(error || !exists){
-        return res.status(404).send({
-          status: 'Error',
-          message: 'Does exist image'
-        });
-      }
-      //Get file 
-      return res.sendFile(path.resolve(filePath));
+    fs.stat(filePath, (error, exists) => {
+        if (error || !exists) {
+            return res.status(404).send({
+                status: 'Error',
+                message: 'Does exist image'
+            });
+        }
+        //Get file 
+        return res.sendFile(path.resolve(filePath));
     })
-  }
-  
+}
+const feed = async (req, res) => {
+    let page = 1;
+    if (req.params.page) page = req.params.page;
+    page = parseInt(page);
+
+    const options = {
+        page: page,
+        limit: 5,
+        sort: '-created_at',
+        populate: ({ path: 'user', select: ' -role -__v -password -email' })
+    }
+
+    try {
+        const myfollows = await followService.followUserIds(req.user.id);
+
+        const publications = await Publication.paginate({ user: myfollows.following }, options);
+
+        return res.status(201).send({
+            status: 'Succes',
+            message: 'Routes Feed',
+            following: myfollows.following,
+            publications: publications.docs,
+            total: publications.totalDocs,
+            pages: Math.ceil(publications.totalDocs / publications.limit),
+            page: publications.page
+        });
+
+    } catch (err) {
+        return response.error(req, res, 'Internal erro. No feed publications', 500, err);
+    }
+}
+
 module.exports = {
     test,
     savePubli,
@@ -142,5 +169,6 @@ module.exports = {
     deletePubli,
     listPubliOneUser,
     uploadImagePubli,
-    publicationMedia
+    publicationMedia,
+    feed
 }

@@ -11,4 +11,6 @@ router.delete('/delete/:id', check.auth,controller.deletePubli);
 router.get('/listoneuser/:id/:page?', check.auth, controller.listPubliOneUser);
 router.post('/uploadimg/:id', [check.auth,uploadImage()], controller.uploadImagePubli);
 router.get('/media/:file', check.auth, controller.publicationMedia);
+router.get('/feed/:page?', check.auth, controller.feed);
 module.exports = router;
+

@@ -6,7 +6,6 @@ const followService = require('../../utils/followService');
 const test = (req, res) => {
     return response.succes(req, res, 'success', 200);
 }
-
 const savefollow = (req, res) => {
     //get dates of body
     const params = req.body;
@@ -33,7 +32,6 @@ const savefollow = (req, res) => {
 
 
 }
-
 const unFollow = (req, res) => {
     const userId = req.user.id;
 
@@ -69,7 +67,7 @@ const following = (req, res) => {
     const options = {
         page: page,
         limit: 5,
-        populate: ({ path: 'followed', select: ' -role -__v -password' })
+        populate: ({ path: 'followed', select: ' -role -__v -password -email' })
     }
 
     Follow.paginate({ user: userID }, options)
@@ -102,7 +100,7 @@ const followers = (req, res) => {
     const options = {
         page: page,
         limit: 5,
-        populate: ({ path: 'user', select: ' -role -__v -password' })
+        populate: ({ path: 'user', select: ' -role -__v -password -email' })
     }
 
 

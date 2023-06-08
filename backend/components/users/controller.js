@@ -73,7 +73,6 @@ const createUser = async (req, res) => {
 
 
 }
-
 const userLogin =  (req, res) => {
   //get params
   if (!req.body.email || !req.body.password) {
@@ -108,7 +107,6 @@ const userLogin =  (req, res) => {
     })
 
 }
-
 const profileUser =  (req, res) => {
   //Get the params of id user to url
   const id = req.params.id;
@@ -132,7 +130,6 @@ const profileUser =  (req, res) => {
       }
     });
 }
-
 const listUser =  (req, res) => {
 
   //check on the page we are on now
@@ -144,12 +141,13 @@ const listUser =  (req, res) => {
   const itemPerPage = 5; //limit elements
   //query with mongoose pagination
 
-
-  User.paginate({}, {
+  const options = {
     limit: itemPerPage,
     page: page,
-    sort: '_id'
-  }).then(async data => {
+    sort: '_id',
+    select: '-password -email -role -__v'
+  }
+  User.paginate({}, options).then(async data => {
 
     let  followUserIds =   await followService.followUserIds(req.user.id);
     return res.status(201).send({
@@ -170,7 +168,6 @@ const listUser =  (req, res) => {
   });
 
 }
-
 const updateUser = async (req, res) => {
 
   let userIdentity = req.user;
@@ -252,7 +249,6 @@ const uploadImage = (req,res)=>{
   //const dele = fs.unlinkSync(filePath);
  
 }
-
 const avatar = (req,res)=>{
 
   const file = req.params.file;
