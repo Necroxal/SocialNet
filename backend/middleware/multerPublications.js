@@ -22,7 +22,7 @@ const uploadImage = () => {
         }
     });
     //load the configuration and assign a name to upload it
-    const upload = multer({storage: storage}).single('publications');
+    const upload = multer({storage: storage}).single('image');
     return upload;
 }
 

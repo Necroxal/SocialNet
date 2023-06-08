@@ -10,6 +10,7 @@ const PublicationSchema = new Schema({
         type: String,
         required: true
     },
+    image:String,
     created_at:{
         type: Date,
         default: Date.now

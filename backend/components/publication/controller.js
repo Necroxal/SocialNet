@@ -89,10 +89,35 @@ const listPubliOneUser = (req, res) => {
         });
 }
 
+const uploadImagePubli = (req,res)=>{
+
+    const publicationId = req.params.id;
+
+    if(!req.file){
+      response.error(req, res, 'Image empty', 440, 'uplaod image (jpg,png,jpge...)');
+      return;
+    }
+    
+    Publication.findByIdAndUpdate({user: req.user.id, '_id': publicationId},{image:req.file.filename},{new:true})
+    .then(data=>{
+      return res.status(200).send({
+        status: 'success',
+        publication: data,
+        file: req.file
+      });
+    }).catch(err=>{
+      if(err || !data){
+      response.error(req, res, 'upload image error', 500, err)
+      }
+    }); 
+   
+  }
+  
 module.exports = {
     test,
     savePubli,
     onePubli,
     deletePubli,
-    listPubliOneUser
+    listPubliOneUser,
+    uploadImagePubli
 }
