@@ -10,4 +10,5 @@ router.get('/viewpublication/:id', check.auth, controller.onePubli);
 router.delete('/delete/:id', check.auth,controller.deletePubli);
 router.get('/listoneuser/:id/:page?', check.auth, controller.listPubliOneUser);
 router.post('/uploadimg/:id', [check.auth,uploadImage()], controller.uploadImagePubli);
+router.get('/media/:file', check.auth, controller.publicationMedia);
 module.exports = router;

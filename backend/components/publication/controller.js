@@ -1,5 +1,8 @@
 const Publication = require('./model');
 const response = require('../../utils/response');
+const fs = require('fs');
+const path = require('path');
+
 const test = (req, res) => {
     return response.succes(req, res, 'success', 200);
 }
@@ -112,6 +115,25 @@ const uploadImagePubli = (req,res)=>{
     }); 
    
   }
+
+const publicationMedia = (req,res)=>{
+
+    const file = req.params.file;
+  
+    const filePath = './public/publications/'+file;
+    console.log(filePath);
+    //validatiob
+    fs.stat(filePath,(error,exists)=>{
+      if(error || !exists){
+        return res.status(404).send({
+          status: 'Error',
+          message: 'Does exist image'
+        });
+      }
+      //Get file 
+      return res.sendFile(path.resolve(filePath));
+    })
+  }
   
 module.exports = {
     test,
@@ -119,5 +141,6 @@ module.exports = {
     onePubli,
     deletePubli,
     listPubliOneUser,
-    uploadImagePubli
+    uploadImagePubli,
+    publicationMedia
 }
