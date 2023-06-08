@@ -1,4 +1,7 @@
 const User = require('./model');
+const Follow = require('../follow/model');
+const Publication = require('../publication/model');
+
 const response = require('../../utils/response');
 const jwt = require('../../utils/jwt');
 const fs = require('fs');
@@ -183,6 +186,8 @@ const updateUser = async (req, res) => {
     const passCrypt = await bcrypt.hash(passEnc, saltRounds);
     userToUpdate.password = passCrypt;
 
+  }else{
+    delete userToUpdate.password;
   }
 
   //console.log(userToUpdate);
@@ -269,6 +274,27 @@ const avatar = (req,res)=>{
  
 
 }
+const counters = async(req,res)=>{
+  let userId = req.user.id;
+  if(req.params.id){
+    userId = req.params.id;
+  }
+  try {
+    const following = await Follow.count({'user': userId});
+    const followed = await Follow.count({'followed': userId});
+    const publications = await Publication.count({'user': userId});
+
+    return res.status(200).send({
+      userId,
+      following,
+      followed,
+      publications
+    });
+    
+  } catch (error) {
+    response.error(req, res, 'Internal erro', 500, err)
+  }
+}
 
 
 module.exports = {
@@ -279,5 +305,6 @@ module.exports = {
   listUser,
   updateUser,
   uploadImage,
-  avatar
+  avatar,
+  counters
 }
