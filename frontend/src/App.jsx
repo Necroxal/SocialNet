@@ -1,10 +1,11 @@
+import { Header } from "./components/layout/general/Header"
 
 function App() {
 
 
   return (
     <div className='layout'>
-      <h1>Social Net</h1>
+      <Header />
     </div>
   )
 }
