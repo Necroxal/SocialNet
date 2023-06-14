@@ -1,11 +1,12 @@
-import { Header } from "./components/layout/general/Header"
+import { Routing } from "./router/Routing";
 
 function App() {
 
 
   return (
     <div className='layout'>
-      <Header />
+      <Routing />
+    
     </div>
   )
 }
