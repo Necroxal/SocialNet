@@ -60,7 +60,11 @@ const createUser = async (req, res) => {
     else {
       user.save(user)
         .then(data => {
-          response.succes(req, res, data, 201);
+          return res.status(200).send({
+            status: 'success',
+            message: 'Update Method',
+            data
+          });
         })
         .catch(err => {
           response.error(req, res, 'Internal error', 500, err)
