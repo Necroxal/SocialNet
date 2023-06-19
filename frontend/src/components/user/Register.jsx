@@ -22,9 +22,9 @@ export const Register = () => {
     });
 
     const data = await request.json();
-    if(data.status == 'success'){
+    if (data.status == 'success') {
       setSaved('saved');
-    }else{
+    } else {
       setSaved('error');
     }
   }
@@ -35,8 +35,12 @@ export const Register = () => {
       </header>
 
       <div className="content__posts">
-    <strong className='alert alert-success'>{saved == 'saved' ? 'User successfully registered': '' } </strong>
-    <strong className='alert alert-danger'>{saved == 'error' ? 'User dont register': '' } </strong>
+        {saved == 'saved' ?
+          <strong className='alert alert-success'> 'User successfully registered' </strong>
+          : ''}
+        {saved == 'error' ?
+          <strong className='alert alert-danger'> 'User dont register'  </strong>
+          : ''}
 
         <form className='register-form' onSubmit={saveUser}>
 
