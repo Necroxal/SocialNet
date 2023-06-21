@@ -56,12 +56,12 @@ export const SideBar = () => {
                     <form className="container-form__form-post">
 
                         <div className="form-post__inputs">
-                            <label for="post" className="form-post__label">What are you thinking today?</label>
+                            <label htmlFor="post" className="form-post__label">What are you thinking today?</label>
                             <textarea name="post" className="form-post__textarea"></textarea>
                         </div>
 
                         <div className="form-post__inputs">
-                            <label for="image" className="form-post__label">Upload image</label>
+                            <label htmlFor="image" className="form-post__label">Upload image</label>
                             <input type="file" name="image" className="form-post__image" />
                         </div>
 

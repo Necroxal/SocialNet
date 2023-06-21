@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
 import { useForm } from '../../hooks/useForm';
 import { Global } from '../../helpers/Global';
-
+import useAuth from '../../hooks/useAuth';
 export const Login = () => {
+
+  const {share} = useAuth();
+
+  
   const { form, changed } = useForm({});
   const [saved, setSaved] = useState('not_sended');
 
@@ -36,7 +40,7 @@ export const Login = () => {
   return (
     <>
       <header className="content__header content__header--public">
-        <h1 className="content__title">Login</h1>
+        <h1 className="content__title">Login {share}</h1>
       </header>
 
       <div className="content__posts">
