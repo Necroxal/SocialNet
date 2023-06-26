@@ -12,6 +12,6 @@ router.get('/profile/:id',check.auth, controller.profileUser);
 router.get('/list/:page?',check.auth, controller.listUser);
 router.put('/update',check.auth, controller.updateUser);
 router.post('/uploadimg',[check.auth,uploadImage()], controller.uploadImage);
-router.get('/avatar/:file',check.auth, controller.avatar);
+router.get('/avatar/:file', controller.avatar);
 router.get('/counters/:id', check.auth, controller.counters);
 module.exports = router;

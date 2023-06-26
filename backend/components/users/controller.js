@@ -263,7 +263,7 @@ const avatar = (req,res)=>{
   const file = req.params.file;
 
   const filePath = './public/avatars/'+file;
-  console.log(filePath);
+  //console.log(filePath);
   //validatiob
   fs.stat(filePath,(error,exists)=>{
     if(error || !exists){
