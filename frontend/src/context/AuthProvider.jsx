@@ -6,6 +6,7 @@ export const AuthProvider = ({ children }) => {
 
     const [auth, setAuth] = useState({});
     const [counters, setCounters] = useState({});
+    const [loading, setloading] = useState(true);
     useEffect(()=>{
         authUser();
     },[]);
@@ -17,6 +18,7 @@ export const AuthProvider = ({ children }) => {
 
         //check if i have the data (token and user)
         if(!token || !user){
+            setloading(false);
             return false;
         }
         //Transform the data to object js
@@ -48,6 +50,7 @@ export const AuthProvider = ({ children }) => {
         //Status auth
         setAuth(data.user);
         setCounters(dataCounters);
+        setloading(false);
     }
 
     return (
@@ -56,7 +59,9 @@ export const AuthProvider = ({ children }) => {
                 auth,
                 setAuth,
                 counters,
-                setCounters
+                setCounters,
+                loading,
+
             }}>
             {children}
         </AuthContext.Provider>
