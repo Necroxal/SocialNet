@@ -5,8 +5,8 @@ import { Global } from '../../../helpers/Global';
 
 export const SideBar = () => {
 
-  const {auth} = useAuth();
-
+  const {auth, counters} = useAuth();
+  console.log(auth, counters);
   return (
     <aside className="layout__aside">
 
@@ -21,6 +21,7 @@ export const SideBar = () => {
                     <div className="profile-info__general-info">
                         <div className="general-info__container-avatar">
                         {auth.image != "default.png" &&  <img src={Global.url + "user/avatar/" + auth.image} className="container-avatar__img" alt="Pic Profile" />}
+                        {auth.image == "default.png" &&  <img src={avatar} className="container-avatar__img" alt="Pic Profile" />}
                         </div>
 
                         <div className="general-info__container-names">
@@ -34,13 +35,13 @@ export const SideBar = () => {
                         <div className="stats__following">
                             <a href="#" className="following__link">
                                 <span className="following__title">Following</span>
-                                <span className="following__number">10</span>
+                                <span className="following__number">{counters.following}</span>
                             </a>
                         </div>
                         <div className="stats__following">
                             <a href="#" className="following__link">
                                 <span className="following__title">Followers</span>
-                                <span className="following__number">13</span>
+                                <span className="following__number">{counters.followed}</span>
                             </a>
                         </div>
 
@@ -48,7 +49,7 @@ export const SideBar = () => {
                         <div className="stats__following">
                             <a href="#" className="following__link">
                                 <span className="following__title">Publications</span>
-                                <span className="following__number">17</span>
+                                <span className="following__number">{counters.publications}</span>
                             </a>
                         </div>
 
