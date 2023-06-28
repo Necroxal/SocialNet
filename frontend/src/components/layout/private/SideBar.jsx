@@ -68,7 +68,7 @@ export const SideBar = () => {
                         </div>
 
                         <div className="form-post__inputs">
-                            <label htmlFor="image" className="form-post__label">Upload image</label>
+                            <label className="form-post__label" htmlFor="image">Upload image</label>
                             <input type="file" name="image" className="form-post__image" />
                         </div>
 
