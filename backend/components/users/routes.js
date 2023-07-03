@@ -15,3 +15,5 @@ router.post('/uploadimg',[check.auth,uploadImage()], controller.uploadImage);
 router.get('/avatar/:file', controller.avatar);
 router.get('/counters/:id', check.auth, controller.counters);
 module.exports = router;
+
+
