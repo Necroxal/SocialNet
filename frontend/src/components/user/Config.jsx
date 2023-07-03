@@ -6,10 +6,13 @@ import { SerializeForm } from '../../helpers/SerializeForm';
 export const Config = () => {
 
   const [saved, setSaved] = useState('not_saved');
-  const { auth , setAuth} = useAuth();
+  const { auth, setAuth } = useAuth();
 
-  const updateUser = async(e) => {
+  const updateUser = async (e) => {
     e.preventDefault();
+
+    //token of authentication
+    const token = localStorage.getItem('token');
     //get dates form
     let newDataUser = SerializeForm(e.target);
     //delete unnecessary property
@@ -18,21 +21,50 @@ export const Config = () => {
     const request = await fetch(Global.url + 'user/update', {
       method: 'PUT',
       body: JSON.stringify(newDataUser),
-      headers:{
+      headers: {
         'Content-Type': 'application/json',
-        'Authorization': localStorage.getItem('token')
+        'Authorization': token
       }
     });
     const data = await request.json();
-   
-    if(data.status == 'success'){
+    console.log(data);
+    if (data.status == 'success' && data.data) {
       delete data.data.password;
       setAuth(data.data);
       setSaved('saved');
-      
-    }else{
+
+    } else {
       setSaved('error');
     }
+
+    //uplaod image 
+    const fileInput = document.querySelector('#file');
+    if(data.status == 'success' && fileInput.files[0]){
+      //get image
+      const formData = new FormData();
+      formData.append('image', fileInput.files[0]);
+
+      //request 
+      const uploadrequest = await fetch(Global.url + 'user/uploadimg',{
+        method: 'POST',
+        body: formData,
+        headers:{
+          'Authorization': token
+        }
+      });
+
+      const uplaodData = await uploadrequest.json();
+
+      //console.log(uplaodData);
+      if(uplaodData.status == 'success' && uplaodData.data){
+        delete uplaodData.data.password;
+        setAuth(uplaodData.data);
+        setSaved('saved');
+      }else{
+        setSaved('error');
+      }
+    }
+
   }
 
   return (
@@ -92,9 +124,10 @@ export const Config = () => {
             </div>
             <input type='file' name='image' id='file' />
           </div>
-
+          <br />
           <input type='submit' value='Update' className='btn btb-success' />
         </form>
+        <br />
       </div>
     </>
 
