@@ -246,7 +246,7 @@ const uploadImage = (req,res)=>{
   .then(data=>{
     return res.status(200).send({
       status: 'success',
-      user: data,
+      data,
       file: req.file
     });
   }).catch(err=>{
