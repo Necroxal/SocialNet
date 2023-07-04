@@ -4,11 +4,13 @@ import { Global } from '../../helpers/Global';
 export const People = () => {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
+  const [more, setMore] = useState(true);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    getUsers();
+    getUsers(1);
   }, [])
-  const getUsers = async (nextPage) => {
-
+  const getUsers = async (nextPage = 1) => {
+    setLoading(true);
     //request users
     const request = await fetch(Global.url + 'user/list/' + nextPage, {
       method: 'GET',
@@ -18,7 +20,9 @@ export const People = () => {
       }
     });
     const data = await request.json();
-    //console.log(data);
+
+    setLoading(false);
+     //create state for list
     if (data.users && data.status == 'success') {
       let newUsers = data.users;
       if (users.length >= 1) {
@@ -26,9 +30,13 @@ export const People = () => {
       }
 
       setUsers(newUsers);
+      setLoading(false);
     }
-    //create state for list
+   
     //pagination
+    if(users.length >= data.total){
+      setMore(false);
+    }
   }
   const nextPage = () => {
     let next = page + 1;
@@ -43,12 +51,14 @@ export const People = () => {
       </header>
 
       <div className="content__posts">
+      
+
         {users.map(user => {
           return (
             <article className="posts__post" key={user._id}>
 
               <div className="post__container">
-
+              
                 <div className="post__image-user">
                   <a href="#" className="post__image-link">
                     {user.image != "default.png" && <img src={Global.url + "user/avatar/" + user.image} className="post__user-image" alt="Pic Profile" />}
@@ -88,13 +98,15 @@ export const People = () => {
           );
         })}
 
-
       </div>
-      <div className="content__container-btn">
-        <button className="content__btn-more-post" onClick={nextPage}>
-          Show more people
-        </button>
-      </div>
+      {loading ? <div>Loading...</div>: ''}
+      {more &&
+        <div className="content__container-btn">
+          <button className="content__btn-more-post" onClick={nextPage}>
+            Show more people
+          </button>
+        </div>
+      }
       <br />
     </>
   )
