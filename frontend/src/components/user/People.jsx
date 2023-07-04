@@ -3,13 +3,14 @@ import avatar from '../../assets/img/user.png';
 import { Global } from '../../helpers/Global';
 export const People = () => {
   const [users, setUsers] = useState([]);
+  const [page, setPage] = useState(1);
   useEffect(() => {
     getUsers();
   }, [])
-  const getUsers = async () => {
+  const getUsers = async (nextPage) => {
 
     //request users
-    const request = await fetch(Global.url + 'user/list/1', {
+    const request = await fetch(Global.url + 'user/list/' + nextPage, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -19,11 +20,20 @@ export const People = () => {
     const data = await request.json();
     //console.log(data);
     if (data.users && data.status == 'success') {
-      setUsers(data.users);
-      console.log(users);
+      let newUsers = data.users;
+      if (users.length >= 1) {
+        newUsers = [...users, ...data.users];
+      }
+
+      setUsers(newUsers);
     }
     //create state for list
     //pagination
+  }
+  const nextPage = () => {
+    let next = page + 1;
+    setPage(next);
+    getUsers(next);
   }
   return (
     <>
@@ -81,7 +91,7 @@ export const People = () => {
 
       </div>
       <div className="content__container-btn">
-        <button className="content__btn-more-post">
+        <button className="content__btn-more-post" onClick={nextPage}>
           Show more people
         </button>
       </div>
