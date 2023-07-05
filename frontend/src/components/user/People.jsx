@@ -5,7 +5,9 @@ export const People = () => {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [more, setMore] = useState(true);
+  const [following, setFollowing] = useState([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     getUsers(1);
   }, [])
@@ -22,7 +24,7 @@ export const People = () => {
     const data = await request.json();
 
     setLoading(false);
-     //create state for list
+    //create state for list
     if (data.users && data.status == 'success') {
       let newUsers = data.users;
       if (users.length >= 1) {
@@ -30,18 +32,21 @@ export const People = () => {
       }
 
       setUsers(newUsers);
+      setFollowing(data.user_following);
       setLoading(false);
     }
-   
+
     //pagination
-    if(users.length >= data.total){
+    if (users.length >= (data.total - data.users.length)) {
       setMore(false);
     }
   }
+
   const nextPage = () => {
     let next = page + 1;
     setPage(next);
     getUsers(next);
+
   }
   return (
     <>
@@ -51,14 +56,14 @@ export const People = () => {
       </header>
 
       <div className="content__posts">
-      
+
 
         {users.map(user => {
           return (
             <article className="posts__post" key={user._id}>
 
               <div className="post__container">
-              
+
                 <div className="post__image-user">
                   <a href="#" className="post__image-link">
                     {user.image != "default.png" && <img src={Global.url + "user/avatar/" + user.image} className="post__user-image" alt="Pic Profile" />}
@@ -82,15 +87,16 @@ export const People = () => {
 
 
               <div className="post__buttons">
-
-                <a href="#" className="post__button post__button--green">
-                  Follow
-                </a>
-                {/*
-               <a href="#" className="post__button">
-                Unfollow
-              </a>
-              */}
+                {!following.includes(user._id) &&
+                  <a href="#" className="post__button post__button--green">
+                    Follow
+                  </a>
+                }
+                {following.includes(user._id) &&
+                  <a href="#" className="post__button">
+                    Unfollow
+                  </a>
+                }
 
               </div>
 
@@ -99,7 +105,7 @@ export const People = () => {
         })}
 
       </div>
-      {loading ? <div>Loading...</div>: ''}
+      {loading ? <div>Loading...</div> : ''}
       {more &&
         <div className="content__container-btn">
           <button className="content__btn-more-post" onClick={nextPage}>
