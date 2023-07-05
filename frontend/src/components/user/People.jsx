@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import avatar from '../../assets/img/user.png';
 import { Global } from '../../helpers/Global';
+import useAuth from '../../hooks/useAuth';
+
 export const People = () => {
+  const { auth } = useAuth();
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [more, setMore] = useState(true);
@@ -46,8 +49,43 @@ export const People = () => {
     let next = page + 1;
     setPage(next);
     getUsers(next);
-
   }
+
+  const follow = async (userId) => {
+    //request ajax
+    const request = await fetch(Global.url + 'follow/savefollow', {
+      method: 'POST',
+      body: JSON.stringify({ followed: userId }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('token')
+      }
+    });
+
+    const data = await request.json();
+
+    if (data.status == 'success') {
+      setFollowing([...following, userId]);
+    }
+    //update state follow
+  }
+  const unfollow = async (userId) => {
+
+    const request = await fetch(Global.url + 'follow/unfollow/' + userId, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('token')
+      }
+    });
+    const data = await request.json();
+    if (data.status == 'success') {
+      let filter = following.filter(followingUserId => userId !== followingUserId);
+      setFollowing(filter);
+    }
+  }
+
+
   return (
     <>
       <header className="content__header">
@@ -85,21 +123,24 @@ export const People = () => {
 
               </div>
 
+              {user._id != auth._id &&
 
-              <div className="post__buttons">
-                {!following.includes(user._id) &&
-                  <a href="#" className="post__button post__button--green">
-                    Follow
-                  </a>
-                }
-                {following.includes(user._id) &&
-                  <a href="#" className="post__button">
-                    Unfollow
-                  </a>
-                }
+                <div className="post__buttons">
+                  {!following.includes(user._id) &&
+                    <button className="post__button post__button--green"
+                      onClick={() => follow(user._id)}>
+                      Follow
+                    </button>
+                  }
+                  {following.includes(user._id) &&
+                    <button className="post__button"
+                      onClick={() => unfollow(user._id)}>
+                      Unfollow
+                    </button>
+                  }
 
-              </div>
-
+                </div>
+              }
             </article>
           );
         })}
