@@ -47,8 +47,7 @@ export const People = () => {
   return (
     <>
       <header className="content__header">
-        <h1 className="content__title">Timeline</h1>
-        <button className="content__button">Mostrar nuevas</button>
+        <h1 className="content__title">People</h1>
       </header>
 
       <UserList
