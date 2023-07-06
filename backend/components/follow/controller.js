@@ -77,10 +77,11 @@ const following = (req, res) => {
             res.status(200).send({
                 status: 'success',
                 message: 'list users followed',
-                data: data.docs,
+                follows: data.docs,
                 total: data.totalDocs,
                 page: Math.ceil(data.totalDocs / data.limit),
                 user_following: followUserIds.following,
+                user_follow_me: followUserIds.followers,
                 
             });
         }).catch(err => {
@@ -111,10 +112,11 @@ const followers = (req, res) => {
         res.status(200).send({
             status: 'success',
             message: 'list users follow me',
-            data: data.docs,
+            follows: data.docs,
             total: data.totalDocs,
             page: Math.ceil(data.totalDocs / data.limit),
-            user_follow_me: followUserIds.followers
+            user_follow_me: followUserIds.followers,
+            user_following: followUserIds.following
         });
     }).catch(err => {
         return response.error(req, res, 'Not found', 404, err);
