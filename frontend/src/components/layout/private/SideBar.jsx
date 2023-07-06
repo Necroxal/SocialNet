@@ -1,7 +1,8 @@
-import React from 'react'
+import React from 'react';
 import avatar from '../../../assets/img/user.png';
 import useAuth from  '../../../hooks/useAuth';
 import { Global } from '../../../helpers/Global';
+import {Link} from 'react-router-dom';
 
 export const SideBar = () => {
 
@@ -33,16 +34,16 @@ export const SideBar = () => {
                     <div className="profile-info__stats">
 
                         <div className="stats__following">
-                            <a href="#" className="following__link">
+                            <Link to={'following/' + auth._id} className="following__link">
                                 <span className="following__title">Following</span>
                                 <span className="following__number">{counters.following}</span>
-                            </a>
+                            </Link>
                         </div>
                         <div className="stats__following">
-                            <a href="#" className="following__link">
+                            <Link to={'followers/' + auth._id} className="following__link">
                                 <span className="following__title">Followers</span>
                                 <span className="following__number">{counters.followed}</span>
-                            </a>
+                            </Link>
                         </div>
 
 
