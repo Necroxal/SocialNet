@@ -39,8 +39,8 @@ export const SideBar = () => {
     //upload image
     const fileInput = document.querySelector("#file");
 
-    if(data.status == 'success' && fileInput.files[0]){
-      const formData  =new FormData();
+    if (data.status == 'success' && fileInput.files[0]) {
+      const formData = new FormData();
       formData.append("image", fileInput.files[0]);
 
       const requestImg = await fetch(Global.url + 'publication/uploadimg/' + data.data._id, {
@@ -52,10 +52,15 @@ export const SideBar = () => {
       });
 
       const uploadData = await requestImg.json();
-      if(uploadData.status == 'success'){
+      if (uploadData.status == 'success') {
         setSaved('saved');
-      }else{
+
+      } else {
         setSaved('error');
+      }
+      if(data.status = 'success' && uploadData.status == 'success'){
+        const myForm = document.querySelector("#publication-form");
+        myForm.reset();
       }
     }
 
@@ -69,12 +74,7 @@ export const SideBar = () => {
       </header>
 
       <div className="aside__container">
-        {saved == 'saved' ?
-          <strong className='alert alert-success'> Publication Successfully</strong>
-          : ''}
-        {saved == 'error' ?
-          <strong className='alert alert-danger'> Publication don´t created </strong>
-          : ''}
+
 
         <div className="aside__profile-info">
 
@@ -119,8 +119,14 @@ export const SideBar = () => {
 
 
         <div className="aside__container-form">
+          {saved == 'saved' ?
+            <strong className='alert alert-success'> Publication Successfully</strong>
+            : ''}
+          {saved == 'error' ?
+            <strong className='alert alert-danger'> Publication don´t created </strong>
+            : ''}
 
-          <form className="container-form__form-post" onSubmit={savepublication}>
+          <form id="publication-form" className="container-form__form-post" onSubmit={savepublication}>
 
             <div className="form-post__inputs">
               <label htmlFor="text" className="form-post__label">What are you thinking today?</label>
@@ -132,7 +138,7 @@ export const SideBar = () => {
               <input type="file" name="image" id="file" className="form-post__image" />
             </div>
 
-            <input type="submit" value="Send" className="form-post__btn-submit"/>
+            <input type="submit" value="Send" className="form-post__btn-submit" />
 
           </form>
 
