@@ -35,7 +35,7 @@ export const Following = () => {
         clenUsers = [...clenUsers, follow.followed]
     });
     data.users = clenUsers;
-    console.log(data.users);
+   // console.log(data.users);
 
     setLoading(false);
     //create state for list
@@ -44,7 +44,7 @@ export const Following = () => {
       if (users.length >= 1) {
         newUsers = [...users, ...data.users];
       }
-      console.log(newUsers);
+      //console.log(newUsers);
       setUsers(newUsers);
       setFollowing(data.user_following);
       setLoading(false);

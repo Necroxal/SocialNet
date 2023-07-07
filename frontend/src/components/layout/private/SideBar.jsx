@@ -13,6 +13,8 @@ export const SideBar = () => {
 
   const savepublication = async (e) => {
     e.preventDefault();
+
+    const token = localStorage.getItem('token');
     let newPublication = form;
     newPublication.user = auth._id;
 
@@ -21,7 +23,7 @@ export const SideBar = () => {
       body: JSON.stringify(newPublication),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': localStorage.getItem('token')
+        'Authorization': token
       }
 
     });
@@ -33,6 +35,28 @@ export const SideBar = () => {
     }
     else {
       setSaved('error');
+    }
+    //upload image
+    const fileInput = document.querySelector("#file");
+
+    if(data.status == 'success' && fileInput.files[0]){
+      const formData  =new FormData();
+      formData.append("image", fileInput.files[0]);
+
+      const requestImg = await fetch(Global.url + 'publication/uploadimg/' + data.data._id, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Authorization': token
+        }
+      });
+
+      const uploadData = await requestImg.json();
+      if(uploadData.status == 'success'){
+        setSaved('saved');
+      }else{
+        setSaved('error');
+      }
     }
 
   }
