@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Global } from '../../helpers/Global';
 import { UserList } from '../user/UserList';
 import { useParams } from 'react-router-dom';
+import { getProfile } from '../../helpers/getProfile';
 
 export const Following = () => {
   const [users, setUsers] = useState([]);
@@ -9,11 +10,12 @@ export const Following = () => {
   const [more, setMore] = useState(true);
   const [following, setFollowing] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [userProfile, setUserProfile] = useState({});
   const params = useParams();
-
+  const token = localStorage.getItem('token');
   useEffect(() => {
     getUsers(1);
+    getProfile(params.userId, setUserProfile);
   }, [])
   const getUsers = async (nextPage = 1) => {
     setLoading(true);
@@ -21,21 +23,21 @@ export const Following = () => {
     //get userId url
     const userId = params.userId;
     //request users
-    const request = await fetch(Global.url + 'follow/following/'+ userId+ '/' + nextPage, {
+    const request = await fetch(Global.url + 'follow/following/' + userId + '/' + nextPage, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': localStorage.getItem('token')
+        'Authorization': token
       }
     });
     const data = await request.json();
     //for and clean folowed
     let clenUsers = [];
-    data.follows.forEach(follow =>{
-        clenUsers = [...clenUsers, follow.followed]
+    data.follows.forEach(follow => {
+      clenUsers = [...clenUsers, follow.followed]
     });
     data.users = clenUsers;
-   // console.log(data.users);
+    // console.log(data.users);
 
     setLoading(false);
     //create state for list
@@ -55,12 +57,11 @@ export const Following = () => {
       setMore(false);
     }
   }
-
-
+  
   return (
     <>
       <header className="content__header">
-        <h1 className="content__title">Users Following</h1>
+        <h1 className="content__title">Users who follow {userProfile.name} {userProfile.surname} </h1>
       </header>
 
       <UserList
@@ -68,13 +69,13 @@ export const Following = () => {
         getUsers={getUsers}
         following={following}
         setFollowing={setFollowing}
-        more = {more}
-        loading = {loading}
-        page = {page}
-        setPage = {setPage}
+        more={more}
+        loading={loading}
+        page={page}
+        setPage={setPage}
       />
 
-     
+
       <br />
     </>
   )
