@@ -1,12 +1,11 @@
 import React from 'react'
 import avatar from '../../../assets/img/user.png';
 import { NavLink } from 'react-router-dom';
-import { People } from '../../user/People';
 import useAuth from '../../../hooks/useAuth';
 import { Global } from '../../../helpers/Global';
 export const Nav = () => {
 
-    const {auth} = useAuth();
+    const { auth } = useAuth();
     return (
         <nav className="navbar__container-lists">
 
@@ -32,35 +31,35 @@ export const Nav = () => {
                     </NavLink>
                 </li>
 
-               
+
             </ul>
 
             <ul className="container-lists__list-end">
                 <li className="list-end__item">
-                    <a href="#" className="list-end__link-image">
-                        
-                        {auth.image != "default.png" &&  <img src={Global.url + "user/avatar/" + auth.image} className="list-end__img" alt="Pic Profile" />}
-                        {auth.image == "default.png" &&  <img src={avatar} className="list-end__img" alt="Pic Profile" />}
-                    </a>
+                    <NavLink to={'/social/profile/' + auth._id} className="list-end__link-image">
+
+                        {auth.image != "default.png" && <img src={Global.url + "user/avatar/" + auth.image} className="list-end__img" alt="Pic Profile" />}
+                        {auth.image == "default.png" && <img src={avatar} className="list-end__img" alt="Pic Profile" />}
+                    </NavLink>
                 </li>
                 <li className="list-end__item">
-                    <a href="#" className="list-end__link">
+                    <NavLink to={'/social/profile/' + auth._id} className="list-end__link">
                         <span className="list-end__name">{auth.nickname}</span>
-                       
-                    </a>
+
+                    </NavLink>
                 </li>
                 <li className="list-end__item">
                     <NavLink to='/social/config' className="list-end__link">
                         <i className='fa-solid fa-gear'></i>
                         <span className="list-end__name">Config</span>
-                       
+
                     </NavLink>
                 </li>
                 <li className="list-end__item">
                     <NavLink to='/social/logout' className="list-end__link">
                         <i className='fa-solid fa-arrow-right-from-bracket'></i>
                         <span className="list-end__name">Sign out</span>
-                       
+
                     </NavLink>
                 </li>
             </ul>

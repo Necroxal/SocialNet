@@ -4,7 +4,7 @@ import useAuth from '../../../hooks/useAuth';
 import { Global } from '../../../helpers/Global';
 import { Link } from 'react-router-dom';
 import { useForm } from '../../../hooks/useForm';
-
+import { NavLink } from 'react-router-dom';
 export const SideBar = () => {
 
   const { auth, counters } = useAuth();
@@ -85,7 +85,7 @@ export const SideBar = () => {
             </div>
 
             <div className="general-info__container-names">
-              <a href="#" className="container-names__name">{auth.name} {auth.surname}</a>
+              <Link to={'/social/profile/' + auth._id} className="container-names__name">{auth.name} {auth.surname}</Link>
               <p className="container-names__nickname">{auth.nickname}</p>
             </div>
           </div>
@@ -107,10 +107,10 @@ export const SideBar = () => {
 
 
             <div className="stats__following">
-              <a href="#" className="following__link">
+              <Link to={'/social/profile/' + auth._id} className="following__link">
                 <span className="following__title">Publications</span>
                 <span className="following__number">{counters.publications}</span>
-              </a>
+              </Link>
             </div>
 
 
