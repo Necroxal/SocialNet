@@ -178,6 +178,9 @@ body {
     line-height: 1.5;
     cursor: pointer;
 }
+.content__button--rigth{
+    float: right;
+}
 
 
 .content__button:hover,
