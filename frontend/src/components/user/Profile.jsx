@@ -6,6 +6,7 @@ import { Global } from '../../helpers/Global';
 import { Link } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
+
 export const Profile = () => {
   const { auth } = useAuth();
   const [user, setUser] = useState({});
@@ -41,8 +42,39 @@ export const Profile = () => {
   }
   const getDataUser = async () => {
     let dataUser = await getProfile(params.userId, setUser);
-    console.log(dataUser);
     if (dataUser.following && dataUser.following._id) setIfollow(true);
+  }
+  const follow = async (userId) => {
+    //request ajax
+    const request = await fetch(Global.url + 'follow/savefollow', {
+      method: 'POST',
+      body: JSON.stringify({ followed: userId }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('token')
+      }
+    });
+
+    const data = await request.json();
+
+    if (data.status == 'success') {
+      setIfollow(true);
+    }
+    //update state follow
+  }
+  const unfollow = async (userId) => {
+
+    const request = await fetch(Global.url + 'follow/unfollow/' + userId, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('token')
+      }
+    });
+    const data = await request.json();
+    if (data.status == 'success') {
+      setIfollow(false);
+    }
   }
   return (
     <>
@@ -59,8 +91,9 @@ export const Profile = () => {
 
               {user._id != auth._id &&
                 (ifollow ?
-                  <button className="content__button content__button--rigth post__button">Unfollow</button>
-                  : <button className="content__button content__button--rigth">Follow</button>
+                  <button onClick={() => unfollow(user._id)} className="content__button content__button--rigth post__button">Unfollow</button>
+                  :
+                  <button onClick={() => follow(user._id)} className="content__button content__button--rigth">Follow</button>
                 )}
             </div>
             <h2 className="container-names__nickname">{user.nickname}</h2>
