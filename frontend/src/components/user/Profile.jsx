@@ -2,24 +2,31 @@ import React, { useEffect, useState } from 'react';
 import avatar from '../../assets/img/user.png';
 import { getProfile } from '../../helpers/getProfile';
 import { useParams } from 'react-router-dom';
-import {Global} from '../../helpers/Global';
-import {Link} from 'react-router-dom';
+import { Global } from '../../helpers/Global';
+import { Link } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 
 export const Profile = () => {
+  const { auth } = useAuth();
   const [user, setUser] = useState({});
   const [counters, setCounters] = useState({});
+  const [ifollow, setIfollow] = useState(false);
   const params = useParams();
-  useEffect(() => {
-    getProfile(params.userId, setUser),
-    getCounters();
-  }, [])
-  useEffect(()=>{
-    getProfile(params.userId, setUser),
-    getCounters();
-  },[params])
 
-  const getCounters = async() =>{
-    const request = await fetch(Global.url + 'user/counters/'+ params.userId,{
+  useEffect(() => {
+
+    getDataUser();
+    getCounters();
+
+  }, [])
+
+  useEffect(() => {
+    getDataUser();
+    getCounters();
+  }, [params])
+
+  const getCounters = async () => {
+    const request = await fetch(Global.url + 'user/counters/' + params.userId, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -27,10 +34,15 @@ export const Profile = () => {
       }
     })
     const data = await request.json();
-    
-    if(data.following && data.followed){
+
+    if (data.following && data.followed) {
       setCounters(data);
     }
+  }
+  const getDataUser = async () => {
+    let dataUser = await getProfile(params.userId, setUser);
+    console.log(dataUser);
+    if (dataUser.following && dataUser.following._id) setIfollow(true);
   }
   return (
     <>
@@ -44,7 +56,12 @@ export const Profile = () => {
           <div className="general-info__container-names">
             <div className="container-names__name">
               <h1 >{user.name} {user.surname}</h1>
-              <button className="content__button content__button--rigth">Follow</button>
+
+              {user._id != auth._id &&
+                (ifollow ?
+                  <button className="content__button content__button--rigth post__button">Unfollow</button>
+                  : <button className="content__button content__button--rigth">Follow</button>
+                )}
             </div>
             <h2 className="container-names__nickname">{user.nickname}</h2>
             <p>{user.bio}</p>
