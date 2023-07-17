@@ -79,7 +79,7 @@ const listPubliOneUser = (req, res) => {
                 status: 'success',
                 message: 'List Publications of one User',
                 user: req.user,
-                data: data.docs,
+                publications: data.docs,
                 total: data.totalDocs,
                 pages: Math.ceil(data.totalDocs / data.limit),
                 page: data.page
