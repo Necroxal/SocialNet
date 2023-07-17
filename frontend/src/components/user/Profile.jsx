@@ -12,18 +12,21 @@ export const Profile = () => {
   const [user, setUser] = useState({});
   const [counters, setCounters] = useState({});
   const [ifollow, setIfollow] = useState(false);
+  const [publications, setPublications] = useState([]);
   const params = useParams();
 
   useEffect(() => {
 
     getDataUser();
     getCounters();
+    getPublications();
 
   }, [])
 
   useEffect(() => {
     getDataUser();
     getCounters();
+    getPublications();
   }, [params])
 
   const getCounters = async () => {
@@ -74,6 +77,21 @@ export const Profile = () => {
     const data = await request.json();
     if (data.status == 'success') {
       setIfollow(false);
+    }
+  }
+  const getPublications = async (nextPage = 1) => {
+
+    const request = await fetch(Global.url + 'publication/listoneuser/' + params.userId + '/' + nextPage, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('token')
+      }
+    });
+    const data = await request.json();
+    if (data.status == 'success') {
+      setPublications(data.publications);
+
     }
   }
   return (
@@ -132,41 +150,45 @@ export const Profile = () => {
 
       <div className="content__posts">
 
-        <article className="posts__post">
+        {publications.map(publication => {
+          return (
+            <article className="posts__post" key={publication._id}>
 
-          <div className="post__container">
+              <div className="post__container">
 
-            <div className="post__image-user">
-              <a href="#" className="post__image-link">
-                <img src={avatar} className="post__user-image" alt="Foto de perfil" />
-              </a>
-            </div>
+                <div className="post__image-user">
+                  <Link to={'/social/profile/' + publication.user._id} className="post__image-link">
+                    {publication.user.image != "default.png" && <img src={Global.url + "user/avatar/" + publication.user.image} className="post__user-image" alt="Pic Profile" />}
+                    {publication.user.image == "default.png" && <img src={avatar} className="post__user-image" alt="Pic Profile" />}
+                  </Link>
+                </div>
 
-            <div className="post__body">
+                <div className="post__body">
 
-              <div className="post__user-info">
-                <a href="#" className="user-info__name">Victor Robles</a>
-                <span className="user-info__divider"> | </span>
-                <a href="#" className="user-info__create-date">Hace 1 hora</a>
+                  <div className="post__user-info">
+                    <a href="#" className="user-info__name">{publication.user.name} {publication.user.surname}</a>
+                    <span className="user-info__divider"> | </span>
+                    <a href="#" className="user-info__create-date">{publication.created_at}</a>
+                  </div>
+
+                  <h4 className="post__content">{publication.text}</h4>
+
+                </div>
+
               </div>
 
-              <h4 className="post__content">Hola, buenos dias.</h4>
+              {auth._id == publication.user._id &&
+                <div className="post__buttons">
 
-            </div>
+                  <a href="#" className="post__button">
+                    <i className="fa-solid fa-trash-can"></i>
+                  </a>
 
-          </div>
+                </div>
+              }
 
-
-          <div className="post__buttons">
-
-            <a href="#" className="post__button">
-              <i className="fa-solid fa-trash-can"></i>
-            </a>
-
-          </div>
-
-        </article>
-
+            </article>);
+        })}
 
       </div>
 
