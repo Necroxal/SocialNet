@@ -132,6 +132,7 @@ export const Profile = () => {
     setMore(true);
     getPublications(1,true);
   }
+
   return (
     <>
       <header className="aside__profile-info">
@@ -210,7 +211,7 @@ export const Profile = () => {
                   </div>
 
                   <h4 className="post__content">{publication.text}</h4>
-
+                  {publication.image && <img src={Global.url + 'publication/media/' + publication.image} />}
                 </div>
 
               </div>
