@@ -14,19 +14,22 @@ export const Profile = () => {
   const [ifollow, setIfollow] = useState(false);
   const [publications, setPublications] = useState([]);
   const params = useParams();
+  const [page, setPage] = useState(1);
+  const [more, setMore] = useState(true);
 
   useEffect(() => {
 
     getDataUser();
     getCounters();
-    getPublications();
+    getPublications(1, true);
 
   }, [])
 
   useEffect(() => {
     getDataUser();
     getCounters();
-    getPublications();
+    setMore(true);
+    getPublications(1, true);
   }, [params])
 
   const getCounters = async () => {
@@ -79,7 +82,7 @@ export const Profile = () => {
       setIfollow(false);
     }
   }
-  const getPublications = async (nextPage = 1) => {
+  const getPublications = async (nextPage = 1, newPorfile = false) => {
 
     const request = await fetch(Global.url + 'publication/listoneuser/' + params.userId + '/' + nextPage, {
       method: 'GET',
@@ -89,10 +92,29 @@ export const Profile = () => {
       }
     });
     const data = await request.json();
+
     if (data.status == 'success') {
-      setPublications(data.publications);
+      let newPublications = data.publications;
+
+      if (!newPorfile && publications.length >= 1) {
+        newPublications = [...publications, ...data.publications]
+      }
+      if(newPorfile){
+        newPublications = data.publications;
+        setMore(true);
+        setPage(1);
+      }
+      setPublications(newPublications);
+      if (!newPorfile && publications.length >= (data.total - data.publications.length)) {
+        setMore(false);
+      }
 
     }
+  }
+  const nextPage = () => {
+    let next = page + 1;
+    setPage(next);
+    getPublications(next);
   }
   return (
     <>
@@ -191,12 +213,13 @@ export const Profile = () => {
         })}
 
       </div>
-
-      <div className="content__container-btn">
-        <button className="content__btn-more-post">
-          Ver mas publicaciones
-        </button>
-      </div>
+      {more &&
+        <div className="content__container-btn">
+          <button className="content__btn-more-post" onClick={nextPage}>
+            Show more publications
+          </button>
+        </div>
+      }
     </>
   )
 }
