@@ -108,6 +108,9 @@ export const Profile = () => {
       if (!newPorfile && publications.length >= (data.total - data.publications.length)) {
         setMore(false);
       }
+      if(data.pages <= 1){
+        setMore(false);
+      }
 
     }
   }
@@ -115,6 +118,19 @@ export const Profile = () => {
     let next = page + 1;
     setPage(next);
     getPublications(next);
+  }
+  const deletePublication = async(publicationId) =>{
+    const request = await fetch(Global.url + 'publication/delete/' + publicationId, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('token')
+      }
+    });
+    const data = await request.json();
+    setPage(1);
+    setMore(true);
+    getPublications(1,true);
   }
   return (
     <>
@@ -202,9 +218,9 @@ export const Profile = () => {
               {auth._id == publication.user._id &&
                 <div className="post__buttons">
 
-                  <a href="#" className="post__button">
+                  <button onClick={() => deletePublication(publication._id)} className="post__button">
                     <i className="fa-solid fa-trash-can"></i>
-                  </a>
+                  </button>
 
                 </div>
               }
