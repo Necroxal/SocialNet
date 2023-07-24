@@ -100,7 +100,7 @@ export const Profile = () => {
       if (!newPorfile && publications.length >= 1) {
         newPublications = [...publications, ...data.publications]
       }
-      if(newPorfile){
+      if (newPorfile) {
         newPublications = data.publications;
         setMore(true);
         setPage(1);
@@ -109,14 +109,14 @@ export const Profile = () => {
       if (!newPorfile && publications.length >= (data.total - data.publications.length)) {
         setMore(false);
       }
-      if(data.pages <= 1){
+      if (data.pages <= 1) {
         setMore(false);
       }
 
     }
   }
- 
- 
+
+
   return (
     <>
       <header className="aside__profile-info">
@@ -161,7 +161,7 @@ export const Profile = () => {
           <div className="stats__following">
             <Link to={'/social/profile/' + user._id} className="following__link">
               <span className="following__title">Publications</span>
-              <span className="following__number">{counters.publication >= 1 ? counters.publication : 0}</span>
+              <span className="following__number">{counters.publications >= 1 ? counters.publications : 0}</span>
             </Link>
           </div>
 
@@ -169,16 +169,16 @@ export const Profile = () => {
         </div>
       </header>
 
-      <PublicationList 
-        publications ={publications}
-        getPublications = {getPublications}
-        page = {page}
-        setPage = {setPage}
-        more = {more}
-        setMore = {setMore}
-      />          
+      <PublicationList
+        publications={publications}
+        getPublications={getPublications}
+        page={page}
+        setPage={setPage}
+        more={more}
+        setMore={setMore}
+      />
 
-     <br />
+      <br />
     </>
   )
 }
