@@ -148,7 +148,7 @@ const feed = async (req, res) => {
         const publications = await Publication.paginate({ user: myfollows.following }, options);
 
         return res.status(201).send({
-            status: 'Succes',
+            status: 'success',
             message: 'Routes Feed',
             following: myfollows.following,
             publications: publications.docs,
